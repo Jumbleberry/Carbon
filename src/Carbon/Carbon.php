@@ -509,7 +509,7 @@ class Carbon extends DateTime implements JsonSerializable
      * @param string|null               $time
      * @param \DateTimeZone|string|null $tz
      */
-    public function __construct($time = null, $tz = null)
+    public function __construct($time = 'now', $tz = null)
     {
         // If the class has a test now set and we are trying to create a now()
         // instance then override as required
@@ -552,7 +552,7 @@ class Carbon extends DateTime implements JsonSerializable
             $locale = setlocale(LC_NUMERIC, '0');
             setlocale(LC_NUMERIC, 'C');
         }
-        parent::__construct($time, $timezone);
+        parent::__construct($time ?? 'now', $timezone);
         if (isset($locale)) {
             setlocale(LC_NUMERIC, $locale);
         }
@@ -862,7 +862,7 @@ class Carbon extends DateTime implements JsonSerializable
         return static::today($tz)->setTimeFromTimeString($time);
     }
 
-    private static function createFromFormatAndTimezone($format, $time, $tz)
+    private static function createFromFormatAndTimezone(string $format, string $time, ?DateTimeZone $tz = null): DateTime
     {
         return $tz !== null
             ? parent::createFromFormat($format, $time, static::safeCreateDateTimeZone($tz))
@@ -878,9 +878,9 @@ class Carbon extends DateTime implements JsonSerializable
      *
      * @throws InvalidArgumentException
      *
-     * @return static
+     * @return DateTime|false
      */
-    public static function createFromFormat($format, $time, $tz = null)
+    public static function createFromFormat($format, $time, ?DateTimeZone $tz = null)
     {
         // First attempt to create an instance, so that error messages are based on the unmodified format.
         $date = self::createFromFormatAndTimezone($format, $time, $tz);
@@ -1308,7 +1308,7 @@ class Carbon extends DateTime implements JsonSerializable
      * @see https://github.com/briannesbitt/Carbon/issues/539
      * @see https://bugs.php.net/bug.php?id=63863
      */
-    public function setDate($year, $month, $day)
+    public function setDate($year, $month, $day): DateTime
     {
         $this->modify('+0 day');
 
@@ -1391,7 +1391,7 @@ class Carbon extends DateTime implements JsonSerializable
      *
      * @return static
      */
-    public function setTimezone($value)
+    public function setTimezone($value): DateTime
     {
         parent::setTimezone(static::safeCreateDateTimeZone($value));
         // https://bugs.php.net/bug.php?id=72338
@@ -5245,7 +5245,7 @@ class Carbon extends DateTime implements JsonSerializable
      *
      * @return static
      */
-    public static function __set_state($array)
+    public static function __set_state(array $array): DateTime
     {
         return static::instance(parent::__set_state($array));
     }
@@ -5255,7 +5255,7 @@ class Carbon extends DateTime implements JsonSerializable
      *
      * @return array|string
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         if (static::$serializer) {
             return call_user_func(static::$serializer, $this);

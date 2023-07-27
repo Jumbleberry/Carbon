@@ -880,6 +880,7 @@ class Carbon extends DateTime implements JsonSerializable
      *
      * @return DateTime|false
      */
+    #[\ReturnTypeWillChange]
     public static function createFromFormat($format, $time, ?DateTimeZone $tz = null)
     {
         // First attempt to create an instance, so that error messages are based on the unmodified format.
@@ -932,6 +933,7 @@ class Carbon extends DateTime implements JsonSerializable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public static function getLastErrors()
     {
         return static::$lastErrors;

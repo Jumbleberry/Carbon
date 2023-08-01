@@ -862,6 +862,7 @@ class Carbon extends DateTime implements JsonSerializable
         return static::today($tz)->setTimeFromTimeString($time);
     }
 
+    #[\ReturnTypeWillChange]
     private static function createFromFormatAndTimezone(string $format, string $time, ?DateTimeZone $tz = null): DateTime
     {
         return $tz !== null
@@ -5257,7 +5258,8 @@ class Carbon extends DateTime implements JsonSerializable
      *
      * @return array|string
      */
-    public function jsonSerialize(): mixed
+    #[\ReturnTypeWillChange]
+    public function jsonSerialize()
     {
         if (static::$serializer) {
             return call_user_func(static::$serializer, $this);
